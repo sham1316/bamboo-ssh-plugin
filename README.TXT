@@ -1,3 +1,41 @@
+#################################################			
+#  												#
+#     Bamboo SSH Plugin for password support	#
+#												#
+#################################################
+
+Author: Eddie Webb
+Date : Jan 21, 2012
+Contact: eddie@edwardawebb.com
+License: GNU General Public License v3
+	
+
+OpenSSH does not support supplying passwords 
+to the SSH command by any other means than prompting user
+(or keys obviously).  Some programs like Expect can be used to
+remedy this, but it not readily found in enterprise environments.
+
+
+
+
+* Passwords are masked in logs
+* Passwords never seen in command history or "ps aux"
+* Passwords (will someday be) stored securely
+
+
+A big thanks to the bamboo scp plugin, https://bitbucket.org/i386/bamboo-scp-plugin
+and it's authors for inspiring the task.
+
+
+
+
+
+
+
+
+
+
+
 You have successfully created a plugin using the Bamboo plugin archetype!
 
 Here are the SDK commands you'll use immediately:
