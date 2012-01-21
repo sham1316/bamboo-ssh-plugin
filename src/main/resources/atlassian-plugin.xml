@@ -10,10 +10,10 @@
     <resource type="i18n" name="com.edwardawebb language" location="english"/>
 
     <!-- defines an example task -->
-    <taskType name="bamboo-ssh-plugin" class="com.edwardawebb.atlassian.bamboo-ssh-plugin.SshTask" key="test">
+    <taskType name="SSH Remote Commands" class="com.edwardawebb.atlassian.plugins.bamboo.sshplugin.SshTask" key="test">
       <description>Execute shell commands on a remote linux server</description>
       <category name="deployment"/>
-      <configuration class="com.edwardawebb.atlassian.bamboo-ssh-plugin.ExampleTaskConfigurator"/>
+      <configuration class="com.edwardawebb.atlassian.plugins.bamboo.sshplugin.SshTaskConfigurator"/>
       <resource type="freemarker" name="edit" location="editSshTask.ftl"/>
       <resource type="freemarker" name="view" location="viewSshTask.ftl"/>
      <resource type="download" name="icon" location="ssh-plugin.png"/>
