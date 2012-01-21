@@ -31,6 +31,7 @@ Want to contribute or modify? see the wiki, or try
 Download and install atlassian's latest SDK
 
 Checkout this code
+$ git clone git@bitbucket.org:eddiewebb/bamboo-ssh-plugin.git
 
 And then change to the directory that you downloaded and..
 
