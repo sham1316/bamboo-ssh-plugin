@@ -3,12 +3,13 @@
 
 [#if mode == "create"]
     [@ww.password labelKey="Password" name="password" required='true'/]
+	[@ww.textarea labelKey="Inline Script" name="inlineScript" required='true'/]
 [#elseif mode == "edit"]
-    [@ww.checkbox labelKey="Change Password?" toggle='true' name='change_password'/]
-    [@ui.bambooSection dependsOn='change_password' ]
+    [@ww.checkbox labelKey="Change Command or Password?" toggle='true' name='change_command'/]
+    [@ui.bambooSection dependsOn='change_command' ]
     [@ww.password labelKey="New Password" name="new_password" required='true'/]
+    [@ww.textarea labelKey="New Inline Script" name="inlineScript" required='true'/]
     [/@ui.bambooSection]
 [/#if]
 
-[@ww.textarea labelKey="Inline Script" name="inlineScript" required='true'/]
 [@ww.textfield labelKey="Timeout" name="timeout" required='true'/]

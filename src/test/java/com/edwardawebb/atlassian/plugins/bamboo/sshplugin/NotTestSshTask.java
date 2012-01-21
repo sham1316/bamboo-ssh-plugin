@@ -12,7 +12,7 @@ import com.atlassian.bamboo.task.TaskContext;
 import com.atlassian.bamboo.task.TaskException;
 import com.edwardawebb.atlassian.plugins.bamboo.sshplugin.SshTask;
 
-public class NotTestMyPlugin extends TestCase
+public class NotTestSshTask extends TestCase
 {
 	@Test
 	public void testTheTaskCanSshToLocalhostAsTestUser()

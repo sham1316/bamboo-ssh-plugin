@@ -19,7 +19,7 @@
     </scm>
 
     <name>bamboo-ssh-plugin</name>
-    <description>This is the com.edwardawebb:bamboo-ssh-plugin plugin for Atlassian Bamboo.</description>
+    <description>Uses Java SSH libraries to allow password based execution of remote commands via SSH</description>
     <packaging>atlassian-plugin</packaging>
 
     <properties>
@@ -34,6 +34,12 @@
             <artifactId>atlassian-bamboo-web</artifactId>
             <version>${bamboo.version}</version>
             <scope>provided</scope>
+			<!--<exclusions>
+             <exclusion>
+                <groupId>javax.jms</groupId>
+                <artifactId>jms</artifactId>
+            </exclusion> 
+			</exclusions>-->
         </dependency>
         
         <dependency>

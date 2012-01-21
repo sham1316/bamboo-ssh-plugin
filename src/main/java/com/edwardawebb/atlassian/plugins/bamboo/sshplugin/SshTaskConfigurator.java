@@ -1,16 +1,19 @@
 package com.edwardawebb.atlassian.plugins.bamboo.sshplugin;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang.StringUtils;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import com.atlassian.bamboo.collections.ActionParametersMap;
 import com.atlassian.bamboo.task.AbstractTaskConfigurator;
 import com.atlassian.bamboo.task.TaskDefinition;
 import com.atlassian.bamboo.utils.error.ErrorCollection;
+import com.google.common.collect.ImmutableList;
 import com.opensymphony.xwork.TextProvider;
-import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.Map;
 
 public class SshTaskConfigurator extends AbstractTaskConfigurator
 {
@@ -20,30 +23,40 @@ public class SshTaskConfigurator extends AbstractTaskConfigurator
     public static final String EDIT_MODE = "edit";
     public static final String MODE = "mode";
 
+    private static final List<String> FIELDS_TO_COPY_ALWAYS = ImmutableList.of("host", "username","timeout","inlineScript");
+    private static final List<String> FIELDS_TO_COPY_SECURE = ImmutableList.of("host", "username","timeout","inlineScript","password");
+    
+
+
     @NotNull
     @Override
     public Map<String, String> generateTaskConfigMap(@NotNull final ActionParametersMap params, @Nullable final TaskDefinition previousTaskDefinition)
     {
         final Map<String, String> config = super.generateTaskConfigMap(params, previousTaskDefinition);
-        config.put("host", params.getString("host"));
-        config.put("username", params.getString("username"));
-        config.put("inlineScript", params.getString("inlineScript"));
-        config.put("timeout", params.getString("timeout"));
+        taskConfiguratorHelper.populateTaskConfigMapWithActionParameters(config, params, FIELDS_TO_COPY_ALWAYS);
 
-        String passwordChange = params.getString("change_password");
-        if ("true".equals(passwordChange))
+        String commandChange = params.getString("change_command");
+        if ("true".equals(commandChange))
         {
+        	//discard the old password, but no need to make them retype commands
             final String password = params.getString("new_password");
             config.put("password", password);
+            final String inlineScript = params.getString("inlineScript");
+            config.put("inlineScript", inlineScript);
         }
         else if (previousTaskDefinition != null)
         {
+        		//pass through and they did not change poassword or command
             config.put("password", previousTaskDefinition.getConfiguration().get("password"));
+            config.put("inlineScript", previousTaskDefinition.getConfiguration().get("inlineScript"));
         }
         else
         {
+        	//first time around, let them set each fresh
             final String password = params.getString("password");
             config.put("password", password);
+            final String inlineScript = params.getString("inlineScript");
+            config.put("inlineScript", inlineScript);
         }
 
         return config;
@@ -63,12 +76,7 @@ public class SshTaskConfigurator extends AbstractTaskConfigurator
     public void populateContextForEdit(@NotNull final Map<String, Object> context, @NotNull final TaskDefinition taskDefinition)
     {
         super.populateContextForEdit(context, taskDefinition);
-
-        context.put("host", taskDefinition.getConfiguration().get("host"));
-        context.put("username", taskDefinition.getConfiguration().get("username"));
-        context.put("password", taskDefinition.getConfiguration().get("password"));
-        context.put("timeout", taskDefinition.getConfiguration().get("timeout"));
-        context.put("inlineScript", taskDefinition.getConfiguration().get("inlineScript"));
+        taskConfiguratorHelper.populateContextWithConfiguration(context, taskDefinition, FIELDS_TO_COPY_SECURE);
         context.put(MODE, EDIT_MODE);
     }
 
@@ -76,12 +84,7 @@ public class SshTaskConfigurator extends AbstractTaskConfigurator
     public void populateContextForView(@NotNull final Map<String, Object> context, @NotNull final TaskDefinition taskDefinition)
     {
         super.populateContextForView(context, taskDefinition);
-
-        context.put("host", taskDefinition.getConfiguration().get("host"));
-        context.put("username", taskDefinition.getConfiguration().get("username"));
-        //context.put("password", taskDefinition.getConfiguration().get("password"));
-        context.put("timeout", taskDefinition.getConfiguration().get("timeout"));
-        context.put("inlineScript", taskDefinition.getConfiguration().get("inlineScript"));
+        taskConfiguratorHelper.populateContextWithConfiguration(context, taskDefinition, FIELDS_TO_COPY_ALWAYS);
     }
 
     @Override
