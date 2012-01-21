@@ -1,1 +1,0 @@
-[@ww.label labelKey="com.edwardawebb.say" name="say"/]
