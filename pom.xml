@@ -13,6 +13,13 @@
         <url>http://edwardawebb.com/</url>
     </organization>
 
+	
+    <scm>
+        <connection>scm:git:ssh://git@bitbucket.org/~/eddiewebb/bamboo-ssh-plugin.git</connection>
+        <developerConnection>scm:git:ssh://git@bitbucket.org/~/eddiewebb/bamboo-ssh-plugin.git</developerConnection>
+        <url>https://bitbucket.org/eddiewebb/bamboo-ssh-plugin/src</url>
+    </scm>
+
     <name>bamboo-ssh-plugin</name>
     <description>This is the com.edwardawebb:bamboo-ssh-plugin plugin for Atlassian Bamboo.</description>
     <packaging>atlassian-plugin</packaging>
