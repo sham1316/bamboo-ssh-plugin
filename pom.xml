@@ -14,7 +14,7 @@
 	
     <scm>
         <connection>scm:git:ssh://git@bitbucket.org/~/eddiewebb/bamboo-ssh-plugin.git</connection>
-        <developerConnection>scm:git:ssh://git@bitbucket.org/~/eddiewebb/bamboo-ssh-plugin.git</developerConnection>
+        <developerConnection>scm:git[fetch]ssh://git@bitbucket.org/~/eddiewebb/bamboo-ssh-plugin.git[pull]ssh://git@bitbucket.org/~/eddiewebb/bamboo-ssh-plugin.git</developerConnection>
         <url>https://bitbucket.org/eddiewebb/bamboo-ssh-plugin/src</url>
     </scm>
 
