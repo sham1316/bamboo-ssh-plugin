@@ -77,6 +77,7 @@ public class SshTask implements TaskType {
 						buildLogger.addBuildLogEntry(string);
 					}
 
+				
 					cmd.join((int)timeout, TimeUnit.SECONDS);
 					result += cmd.getExitStatus();
 					if (result != 0) {
