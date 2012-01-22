@@ -38,11 +38,11 @@ public class SshTaskConfigurator extends AbstractTaskConfigurator
         String commandChange = params.getString("change_command");
         if ("true".equals(commandChange))
         {
-        	//discard the old password, but no need to make them retype commands
+        	//The old password was discarded, bt command was show so it is posible they mad ehcanges
             final String password = params.getString("new_password");
             config.put("password", password);
-            final String inlineScript = params.getString("inlineScript");
-            config.put("inlineScript", inlineScript);
+            final String script = params.getString("inlineScript");
+            config.put("inlineScript", script);
         }
         else if (previousTaskDefinition != null)
         {
@@ -55,8 +55,9 @@ public class SshTaskConfigurator extends AbstractTaskConfigurator
         	//first time around, let them set each fresh
             final String password = params.getString("password");
             config.put("password", password);
-            final String inlineScript = params.getString("inlineScript");
-            config.put("inlineScript", inlineScript);
+            final String script = params.getString("inlineScript");
+            config.put("inlineScript", script);
+            
         }
 
         return config;
