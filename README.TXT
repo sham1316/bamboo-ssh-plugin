@@ -50,3 +50,4 @@ https://developer.atlassian.com/display/DOCS/Developing+with+the+Atlassian+Plugi
 
 A big thanks to the bamboo scp plugin, https://bitbucket.org/i386/bamboo-scp-plugin
 and it's authors for inspiring the task.
+ 
