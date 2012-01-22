@@ -18,6 +18,9 @@ remedy this, but it not readily found in enterprise environments.
 
 
 
+
+
+
 * Passwords are masked in logs
 * Passwords never seen in command history or "ps aux"
 * Changing the executed command requires re-entry of password
