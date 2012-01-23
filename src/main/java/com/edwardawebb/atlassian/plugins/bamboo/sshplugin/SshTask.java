@@ -45,7 +45,7 @@ public class SshTask implements TaskType {
 
 		buildLogger.addBuildLogEntry("Attempting SSH command(s):"
 				+ inlineScript);
-		// Always verify
+	
 		ssh.addHostKeyVerifier(new HostKeyVerifier() {
 			@Override
 			public boolean verify(final String s, final int i,

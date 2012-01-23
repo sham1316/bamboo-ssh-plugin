@@ -11,6 +11,7 @@ import junit.framework.TestCase;
 
 import com.atlassian.bamboo.collections.ActionParametersMap;
 import com.atlassian.bamboo.configuration.ConfigurationMap;
+import com.atlassian.bamboo.task.TaskConfiguratorHelper;
 import com.atlassian.bamboo.task.TaskContext;
 import com.atlassian.bamboo.task.TaskDefinition;
 import com.atlassian.bamboo.task.TaskException;
@@ -39,7 +40,6 @@ public class NotTestSshTask extends TestCase
 	public void testTheConfigValuesCanBeCreated(){
 		SshTaskConfigurator config = new SshTaskConfigurator();
 		TaskDefinition previousDef = null; //new config
-		
 		
 		ActionParametersMap params = mock(ActionParametersMap.class);
 		populateParams(params);
