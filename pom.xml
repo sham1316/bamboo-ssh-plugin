@@ -10,7 +10,6 @@
     <organization>
         <url>http://edwardawebb.com/</url>
     </organization>
-
 	
     <scm>
         <connection>scm:git:ssh://git@bitbucket.org:eddiewebb/bamboo-ssh-plugin.git</connection>
