@@ -33,12 +33,6 @@
             <artifactId>atlassian-bamboo-web</artifactId>
             <version>${bamboo.version}</version>
             <scope>provided</scope>
-			<!--<exclusions>
-             <exclusion>
-                <groupId>javax.jms</groupId>
-                <artifactId>jms</artifactId>
-            </exclusion> 
-			</exclusions>-->
         </dependency>
         
         <dependency>
