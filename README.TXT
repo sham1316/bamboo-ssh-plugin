@@ -1,7 +1,7 @@
 #################################################			
-#  												#
+#						#
 #     Bamboo SSH Plugin for password support	#
-#												#
+#						#
 #################################################
 
 Author: Eddie Webb
@@ -9,18 +9,9 @@ Date : Jan 21, 2012
 Contact: eddie@edwardawebb.com
 License: GNU General Public License v3
 	
+Uses Java libraries to provide support for executing shell commands on a remote host using a password rather then pre-defined keys.
 
-OpenSSH does not support supplying passwords 
-to the SSH command by any other means than prompting user
-(or keys obviously).  Some programs like Expect can be used to
-remedy this, but it not readily found in enterprise environments.
-
-
-
-
-
-
-
+* Does not require the public key to be installed on remote machines (though you can use this plugin to easily do so!)
 * Passwords are masked in logs
 * Passwords never seen in command history or "ps aux"
 * Changing the executed command requires re-entry of password
@@ -28,7 +19,7 @@ remedy this, but it not readily found in enterprise environments.
 
 
 
-Want to contribute or modify? see the wiki, or try
+=== Want to contribute or modify? see the wiki, or try ===
 
 
 Download and install atlassian's latest SDK
