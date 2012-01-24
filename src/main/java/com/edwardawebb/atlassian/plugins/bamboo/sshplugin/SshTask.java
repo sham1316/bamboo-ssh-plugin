@@ -43,8 +43,7 @@ public class SshTask implements TaskType {
 
 		final SSHClient ssh = new SSHClient();
 
-		buildLogger.addBuildLogEntry("Attempting SSH command(s):"
-				+ inlineScript);
+		buildLogger.addBuildLogEntry("Attempting SSH connection");
 	
 		ssh.addHostKeyVerifier(new HostKeyVerifier() {
 			@Override
@@ -57,52 +56,69 @@ public class SshTask implements TaskType {
 		try {
 			ssh.connect(host);
 			ssh.authPassword(username, password);
-			buildLogger.addBuildLogEntry("Connected");
+			buildLogger.addBuildLogEntry("Connected to " + host + " as " + username);
 		} catch (IOException e) {
 			buildLogger.addErrorLogEntry("Failed to connect to host", e);
 			return taskResultBuilder.failedWithError().build();
 		}
-		try {
-
-			try {
+		
+		
+		try{
+			
+			for (String commandLine : inlineScript.split("\n")){
+				buildLogger.addBuildLogEntry("Exec: " + commandLine);
 				final Session session = ssh.startSession();
-
-				int result = 0;
-				try {
-
-					final Command cmd = session.exec(inlineScript);
-					for (String string : IOUtils
-							.readFully(cmd.getInputStream()).toString()
-							.split("\n")) {
-						buildLogger.addBuildLogEntry(string);
-					}
-
-				
+				try{
+					final Command cmd = session.exec(commandLine);
+					buildLogger.addBuildLogEntry("      " + IOUtils.readFully(cmd.getInputStream()).toString());
 					cmd.join((int)timeout, TimeUnit.SECONDS);
-					result += cmd.getExitStatus();
-					if (result != 0) {
-						buildLogger
-								.addErrorLogEntry("SSH script failed with error code: "
-										+ result);
+					if ( cmd.getExitStatus() != 0 || null != cmd.getExitErrorMessage() ){
+						buildLogger.addErrorLogEntry("SSH script failed with error code: "
+								+ cmd.getExitStatus());
+						buildLogger.addErrorLogEntry("Message: "
+										+ cmd.getExitErrorMessage());
 						taskResultBuilder = taskResultBuilder.failedWithError();
-
-					}
-
-					if (result == 0) {
-						buildLogger
-								.addBuildLogEntry("Successfully executed SSH commands");
-						taskResultBuilder = taskResultBuilder.success();
-					}
+					}					
 				} finally {
 					session.close();
 				}
-			} finally {
-				ssh.disconnect();
 			}
+			
+				buildLogger
+						.addBuildLogEntry("Successfully executed SSH commands");
+				taskResultBuilder = taskResultBuilder.success();
+			
 		} catch (IOException e) {
 			e.printStackTrace();
+		}finally {
+			try {
+				ssh.disconnect();
+			} catch (IOException e) {
+				taskResultBuilder = taskResultBuilder.failedWithError();
+				e.printStackTrace();
+			}
 		}
 
 		return taskResultBuilder.build();
 	}
 }
+
+
+//This should work!
+//for (String commandLine : inlineScript.split("\n")){
+//	buildLogger.addBuildLogEntry("Exec: " + commandLine);
+//	final Command cmd = session.exec(commandLine);
+//	String output = CommandReader.getNextLineFrom(cmd.getInputStream());
+//	if(cmd.getExitStatus() != 0){
+//		buildLogger.addErrorLogEntry("Command Failed: " + commandLine);
+//		for (String string : IOUtils
+//				.readFully(cmd.getErrorStream()).toString()
+//				.split("\n")) {
+//			buildLogger.addErrorLogEntry("\t" + string);								
+//		}
+//		break;
+//	}
+//	
+//	buildLogger.addBuildLogEntry(output);
+//}
+
