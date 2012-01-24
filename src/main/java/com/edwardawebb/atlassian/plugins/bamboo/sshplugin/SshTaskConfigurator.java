@@ -86,6 +86,8 @@ public class SshTaskConfigurator extends AbstractTaskConfigurator
     {
         super.populateContextForView(context, taskDefinition);
         taskConfiguratorHelper.populateContextWithConfiguration(context, taskDefinition, FIELDS_TO_COPY_ALWAYS);
+        
+        context.put("inlineScript", taskDefinition.getConfiguration().get("inlineScript").replaceAll("\n", "\r\n     "));
     }
 
     @Override
