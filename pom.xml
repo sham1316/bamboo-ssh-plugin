@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.edwardawebb</groupId>
     <artifactId>bamboo-ssh-plugin</artifactId>
-    <version>1.0.RC3-SNAPSHOT</version>
+    <version>1.0.RC3</version>
 
     <organization>
     	<name>Edward A Webb</name>
