@@ -17,8 +17,6 @@ Uses Java libraries to provide support for executing shell commands on a remote 
 * Changing the executed command requires re-entry of password
 
 
-
-
 === Want to contribute or modify? see the wiki, or try ===
 
 
