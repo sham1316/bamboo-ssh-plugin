@@ -2,8 +2,6 @@ package com.edwardawebb.atlassian.plugins.bamboo.sshplugin;
 
 import java.io.IOException;
 import java.security.PublicKey;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import net.schmizz.sshj.SSHClient;
@@ -16,6 +14,7 @@ import org.jetbrains.annotations.NotNull;
 
 import com.atlassian.bamboo.build.logger.BuildLogger;
 import com.atlassian.bamboo.configuration.ConfigurationMap;
+import com.atlassian.bamboo.security.EncryptionService;
 import com.atlassian.bamboo.task.TaskContext;
 import com.atlassian.bamboo.task.TaskException;
 import com.atlassian.bamboo.task.TaskResult;
@@ -23,6 +22,8 @@ import com.atlassian.bamboo.task.TaskResultBuilder;
 import com.atlassian.bamboo.task.TaskType;
 
 public class SshTask implements TaskType {
+	private transient EncryptionService encryptionService;
+
 	@NotNull
 	@java.lang.Override
 	public TaskResult execute(@NotNull final TaskContext taskContext)
@@ -36,7 +37,7 @@ public class SshTask implements TaskType {
 
 		final String host = config.get("host");
 		final String username = config.get("username");
-		final String password = config.get("password");
+		final String password = encryptionService.decrypt(config.get("password"));
 
 		final String inlineScript = config.get("inlineScript");
 		final long timeout = config.getAsLong("timeout");
@@ -100,6 +101,12 @@ public class SshTask implements TaskType {
 		}
 
 		return taskResultBuilder.build();
+	}
+	
+	
+	public void setEncryptionService(EncryptionService encryptionService)
+	{
+	    this.encryptionService = encryptionService;
 	}
 }
 

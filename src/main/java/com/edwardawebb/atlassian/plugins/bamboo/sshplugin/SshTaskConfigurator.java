@@ -1,6 +1,5 @@
 package com.edwardawebb.atlassian.plugins.bamboo.sshplugin;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -12,12 +11,15 @@ import com.atlassian.bamboo.collections.ActionParametersMap;
 import com.atlassian.bamboo.task.AbstractTaskConfigurator;
 import com.atlassian.bamboo.task.TaskDefinition;
 import com.atlassian.bamboo.utils.error.ErrorCollection;
+import com.atlassian.bamboo.security.EncryptionService;
 import com.google.common.collect.ImmutableList;
 import com.opensymphony.xwork.TextProvider;
 
 public class SshTaskConfigurator extends AbstractTaskConfigurator
 {
-    private TextProvider textProvider;
+    private transient TextProvider textProvider;
+
+	private transient EncryptionService encryptionService;
 
     public static final String CREATE_MODE = "create";
     public static final String EDIT_MODE = "edit";
@@ -40,21 +42,21 @@ public class SshTaskConfigurator extends AbstractTaskConfigurator
         {
         	//The old password was discarded, bt command was show so it is posible they mad ehcanges
             final String password = params.getString("new_password");
-            config.put("password", password);
+            config.put("password", encryptionService.encrypt( password));
             final String script = params.getString("inlineScript");
             config.put("inlineScript", script);
         }
         else if (previousTaskDefinition != null)
         {
         		//pass through and they did not change poassword or command
-            config.put("password", previousTaskDefinition.getConfiguration().get("password"));
+            config.put("password", encryptionService.encrypt(previousTaskDefinition.getConfiguration().get("password")));
             config.put("inlineScript", previousTaskDefinition.getConfiguration().get("inlineScript"));
         }
         else
         {
         	//first time around, let them set each fresh
             final String password = params.getString("password");
-            config.put("password", password);
+            config.put("password", encryptionService.encrypt(password));
             final String script = params.getString("inlineScript");
             config.put("inlineScript", script);
             
@@ -123,5 +125,10 @@ public class SshTaskConfigurator extends AbstractTaskConfigurator
     public void setTextProvider(final TextProvider textProvider)
     {
         this.textProvider = textProvider;
+    }
+
+    public void setEncryptionService(EncryptionService encryptionService)
+    {
+        this.encryptionService = encryptionService;
     }
 }
