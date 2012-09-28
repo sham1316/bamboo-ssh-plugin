@@ -14,6 +14,7 @@ import org.jetbrains.annotations.NotNull;
 
 import com.atlassian.bamboo.build.logger.BuildLogger;
 import com.atlassian.bamboo.configuration.ConfigurationMap;
+import com.atlassian.bamboo.security.EncryptionException;
 import com.atlassian.bamboo.security.EncryptionService;
 import com.atlassian.bamboo.task.TaskContext;
 import com.atlassian.bamboo.task.TaskException;
@@ -37,7 +38,14 @@ public class SshTask implements TaskType {
 
 		final String host = config.get("host");
 		final String username = config.get("username");
-		final String password = encryptionService.decrypt(config.get("password"));
+		String decrypted;
+		try{
+			 decrypted =encryptionService.decrypt(config.get("password"));
+		}catch(EncryptionException e){
+			buildLogger.addBuildLogEntry("Decryption of SSH password failed, will attempt to use value as it exists in DB, and save encrypted version for subsequent use");
+			decrypted = config.get("password");
+		}
+		final String password = decrypted;
 
 		final String inlineScript = config.get("inlineScript");
 		final long timeout = config.getAsLong("timeout");
