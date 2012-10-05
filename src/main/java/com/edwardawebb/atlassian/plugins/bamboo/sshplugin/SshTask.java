@@ -21,6 +21,7 @@ import com.atlassian.bamboo.task.TaskException;
 import com.atlassian.bamboo.task.TaskResult;
 import com.atlassian.bamboo.task.TaskResultBuilder;
 import com.atlassian.bamboo.task.TaskType;
+import com.atlassian.bamboo.variable.CustomVariableContext;
 
 public class SshTask implements TaskType {
 	private transient EncryptionService encryptionService;
@@ -32,6 +33,7 @@ public class SshTask implements TaskType {
 		TaskResultBuilder taskResultBuilder = TaskResultBuilder
 				.create(taskContext);
 
+		boolean failure = false;
 		final BuildLogger buildLogger = taskContext.getBuildLogger();
 
 		final ConfigurationMap config = taskContext.getConfigurationMap();
@@ -75,6 +77,7 @@ public class SshTask implements TaskType {
 		try{
 			
 			for (String commandLine : inlineScript.split("\n")){
+
 				buildLogger.addBuildLogEntry("Exec: " + commandLine);
 				final Session session = ssh.startSession();
 				try{
@@ -86,16 +89,13 @@ public class SshTask implements TaskType {
 								+ cmd.getExitStatus());
 						buildLogger.addErrorLogEntry("Message: "
 										+ cmd.getExitErrorMessage());
-						taskResultBuilder = taskResultBuilder.failedWithError();
+						failure = true;
+						break;
 					}					
 				} finally {
 					session.close();
 				}
 			}
-			
-				buildLogger
-						.addBuildLogEntry("Successfully executed SSH commands");
-				taskResultBuilder = taskResultBuilder.success();
 			
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -107,15 +107,22 @@ public class SshTask implements TaskType {
 				e.printStackTrace();
 			}
 		}
-
+		if(!failure){
+			taskResultBuilder = taskResultBuilder.success();			
+			buildLogger
+					.addBuildLogEntry("Successfully executed SSH commands");
+		}else{
+			taskResultBuilder = taskResultBuilder.failedWithError();
+		}
 		return taskResultBuilder.build();
 	}
-	
+
 	
 	public void setEncryptionService(EncryptionService encryptionService)
 	{
 	    this.encryptionService = encryptionService;
 	}
+	
 }
 
 
