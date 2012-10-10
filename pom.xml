@@ -25,7 +25,7 @@
     <properties>
         <bamboo.version>4.2</bamboo.version>
         <bamboo.data.version>3.2.2</bamboo.data.version>
-        <amps.version>3.7.2</amps.version>
+        <amps.version>3.11</amps.version>
     </properties>
 
     <dependencies>
@@ -67,7 +67,7 @@
             <plugin>
                 <groupId>com.atlassian.maven.plugins</groupId>
                 <artifactId>maven-bamboo-plugin</artifactId>
-                <version>3.7.2</version>
+                <version>${amps.version}</version>
                 <extensions>true</extensions>
                 <configuration>
                     <productVersion>${bamboo.version}</productVersion>

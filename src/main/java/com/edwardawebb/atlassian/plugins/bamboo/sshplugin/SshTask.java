@@ -21,7 +21,6 @@ import com.atlassian.bamboo.task.TaskException;
 import com.atlassian.bamboo.task.TaskResult;
 import com.atlassian.bamboo.task.TaskResultBuilder;
 import com.atlassian.bamboo.task.TaskType;
-import com.atlassian.bamboo.variable.CustomVariableContext;
 
 public class SshTask implements TaskType {
 	private transient EncryptionService encryptionService;
@@ -44,7 +43,7 @@ public class SshTask implements TaskType {
 		try{
 			 decrypted =encryptionService.decrypt(config.get("password"));
 		}catch(EncryptionException e){
-			buildLogger.addBuildLogEntry("Decryption of SSH password failed, will attempt to use value as it exists in DB, and save encrypted version for subsequent use");
+			buildLogger.addBuildLogEntry("Decryption of SSH password failed, will attempt to use value as it exists in DB.");
 			decrypted = config.get("password");
 		}
 		final String password = decrypted;
@@ -89,31 +88,31 @@ public class SshTask implements TaskType {
 								+ cmd.getExitStatus());
 						buildLogger.addErrorLogEntry("Message: "
 										+ cmd.getExitErrorMessage());
-						failure = true;
-						break;
+						throw new SSHExecutionException("Failed to execute " + commandLine + ", return code: " + cmd.getExitStatus());
 					}					
 				} finally {
 					session.close();
 				}
+				taskResultBuilder = taskResultBuilder.success();			
+				buildLogger
+						.addBuildLogEntry("Successfully executed SSH commands");
 			}
 			
 		} catch (IOException e) {
+			taskResultBuilder = taskResultBuilder.failedWithError();
 			e.printStackTrace();
+		}catch (SSHExecutionException e) {
+			taskResultBuilder = taskResultBuilder.failedWithError();			
 		}finally {
 			try {
 				ssh.disconnect();
+				buildLogger.addBuildLogEntry("Disconnected from server");
 			} catch (IOException e) {
 				taskResultBuilder = taskResultBuilder.failedWithError();
 				e.printStackTrace();
 			}
 		}
-		if(!failure){
-			taskResultBuilder = taskResultBuilder.success();			
-			buildLogger
-					.addBuildLogEntry("Successfully executed SSH commands");
-		}else{
-			taskResultBuilder = taskResultBuilder.failedWithError();
-		}
+		
 		return taskResultBuilder.build();
 	}
 
@@ -125,22 +124,4 @@ public class SshTask implements TaskType {
 	
 }
 
-
-//This should work!
-//for (String commandLine : inlineScript.split("\n")){
-//	buildLogger.addBuildLogEntry("Exec: " + commandLine);
-//	final Command cmd = session.exec(commandLine);
-//	String output = CommandReader.getNextLineFrom(cmd.getInputStream());
-//	if(cmd.getExitStatus() != 0){
-//		buildLogger.addErrorLogEntry("Command Failed: " + commandLine);
-//		for (String string : IOUtils
-//				.readFully(cmd.getErrorStream()).toString()
-//				.split("\n")) {
-//			buildLogger.addErrorLogEntry("\t" + string);								
-//		}
-//		break;
-//	}
-//	
-//	buildLogger.addBuildLogEntry(output);
-//}
 
