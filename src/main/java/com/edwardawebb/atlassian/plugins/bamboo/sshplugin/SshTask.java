@@ -1,6 +1,8 @@
 package com.edwardawebb.atlassian.plugins.bamboo.sshplugin;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.security.PublicKey;
 import java.util.concurrent.TimeUnit;
 
@@ -81,13 +83,23 @@ public class SshTask implements TaskType {
 				final Session session = ssh.startSession();
 				try{
 					final Command cmd = session.exec(commandLine);
-					buildLogger.addBuildLogEntry("      " + IOUtils.readFully(cmd.getInputStream()).toString());
+					
+					BufferedReader in = new BufferedReader(new InputStreamReader(cmd.getInputStream()));
+                    String line = null;
+                    while((line = in.readLine()) != null) {
+                            buildLogger.addBuildLogEntry(line);
+                    }
 					cmd.join((int)timeout, TimeUnit.SECONDS);
 					if ( cmd.getExitStatus() != 0 || null != cmd.getExitErrorMessage() ){
 						buildLogger.addErrorLogEntry("SSH script failed with error code: "
 								+ cmd.getExitStatus());
-						buildLogger.addErrorLogEntry("Message: "
-										+ cmd.getExitErrorMessage());
+						String error = cmd.getExitErrorMessage();
+						if ( null == error){
+							error = IOUtils.readFully(cmd.getErrorStream()).toString();
+						}
+						buildLogger.addErrorLogEntry("Error Details (if any): "
+								+ error);
+						
 						throw new SSHExecutionException("Failed to execute " + commandLine + ", return code: " + cmd.getExitStatus());
 					}					
 				} finally {
