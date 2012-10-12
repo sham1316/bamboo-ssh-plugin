@@ -4,19 +4,20 @@
         <description>${project.description}</description>
         <version>${project.version}</version>
         <vendor name="${project.organization.name}" url="${project.organization.url}" />
-        
+         <!-- Support for the following marketing assets has been implemented -->
+        <param name="plugin-icon">images/console.png</param>
+        <param name="plugin-logo">images/console.png</param>
     </plugin-info>
 
-    <!-- internationalize your plugin -->
+    
     <resource type="i18n" name="com.edwardawebb language" location="english"/>
 
-    <!-- defines an example task -->
+   
     <taskType name="SSH Remote Commands" class="com.edwardawebb.atlassian.plugins.bamboo.sshplugin.SshTask" key="test">
-      <description>Execute shell commands on a remote linux server</description>
-      <category name="deployment"/>
-      <configuration class="com.edwardawebb.atlassian.plugins.bamboo.sshplugin.SshTaskConfigurator"/>
-      <resource type="freemarker" name="edit" location="editSshTask.ftl"/>
-      <resource type="freemarker" name="view" location="viewSshTask.ftl"/>
-     <resource type="download" name="icon" location="ssh-plugin.png"/>
+		<description>Execute shell commands on a remote server over SSH</description>
+		<category name="deployment"/>
+		<configuration class="com.edwardawebb.atlassian.plugins.bamboo.sshplugin.SshTaskConfigurator"/>
+		<resource type="freemarker" name="edit" location="editSshTask.ftl"/>
+		<resource type="download" name="icon" location="images/console80.png"/>     	
     </taskType>
 </atlassian-plugin>
