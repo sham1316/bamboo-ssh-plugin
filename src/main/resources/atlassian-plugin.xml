@@ -18,6 +18,6 @@
 		<category name="deployment"/>
 		<configuration class="com.edwardawebb.atlassian.plugins.bamboo.sshplugin.SshTaskConfigurator"/>
 		<resource type="freemarker" name="edit" location="editSshTask.ftl"/>
-		<resource type="download" name="icon" location="images/console80.png"/>     	
+		<resource type="download" name="icon" location="images/console.png"/>     	
     </taskType>
 </atlassian-plugin>
