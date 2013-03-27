@@ -102,6 +102,7 @@ public class SshTask implements TaskType {
 		}finally {
 			try {
 				ssh.disconnect();
+				ssh.close();
 			} catch (IOException e) {
 				taskResultBuilder = taskResultBuilder.failedWithError();
 				e.printStackTrace();

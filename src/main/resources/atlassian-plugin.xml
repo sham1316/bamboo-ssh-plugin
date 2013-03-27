@@ -20,4 +20,11 @@
 		<resource type="freemarker" name="edit" location="editSshTask.ftl"/>
 		<resource type="download" name="icon" location="images/console.png"/>     	
     </taskType>
+    <taskType name="Reverse SCP Task" class="com.edwardawebb.atlassian.plugins.bamboo.sshplugin.ReverseScpTask" key="reversescptask">
+      <description>Copy files from a remote server to the current build agent using SCP</description>
+      <configuration class="com.edwardawebb.atlassian.plugins.bamboo.sshplugin.ReverseScpTaskConfigurator"/>
+      <resource type="freemarker" name="edit" location="editReverseScpTask.ftl"/>
+      <resource type="freemarker" name="view" location="viewReverseScpTask.ftl"/>
+      <resource type="download" name="icon" location="scp.png"/>
+    </taskType>
 </atlassian-plugin>
