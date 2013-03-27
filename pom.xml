@@ -4,8 +4,14 @@
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.edwardawebb</groupId>
+<<<<<<< HEAD
     <artifactId>bamboo-ssh-plugin</artifactId>
     <version>1.2.1-SNAPSHOT</version>
+=======
+    <artifactId>bamboo-ssh-plugin</artifactId>
+    <version>1.1.1-SNAPSHOT</version>
+
+>>>>>>> parent of d67e789... BSST-7 BSST-6
     <organization>
     	<name>Edward A Webb</name>
         <url>http://edwardawebb.com/</url>
