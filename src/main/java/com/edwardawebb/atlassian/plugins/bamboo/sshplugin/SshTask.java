@@ -21,7 +21,6 @@ import com.atlassian.bamboo.task.TaskException;
 import com.atlassian.bamboo.task.TaskResult;
 import com.atlassian.bamboo.task.TaskResultBuilder;
 import com.atlassian.bamboo.task.TaskType;
-import com.atlassian.bamboo.variable.CustomVariableContext;
 
 public class SshTask implements TaskType {
 	private transient EncryptionService encryptionService;
@@ -102,6 +101,7 @@ public class SshTask implements TaskType {
 		}finally {
 			try {
 				ssh.disconnect();
+				ssh.close();
 			} catch (IOException e) {
 				taskResultBuilder = taskResultBuilder.failedWithError();
 				e.printStackTrace();

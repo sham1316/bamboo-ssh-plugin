@@ -1,0 +1,5 @@
+[@ww.label labelKey="Host" name="host"/]
+[@ww.label labelKey="Username" name="username"/]
+[@ww.label labelKey="Local Path" name="localPath"/]
+[@ww.label labelKey="Remote Path" name="remotePath"/]
+[@ww.label labelKey="SSH Command" name="command"/]

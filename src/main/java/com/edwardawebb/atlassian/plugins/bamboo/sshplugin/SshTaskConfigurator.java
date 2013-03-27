@@ -17,6 +17,7 @@ import com.opensymphony.xwork.TextProvider;
 
 public class SshTaskConfigurator extends AbstractTaskConfigurator
 {
+	//TODO use to pull i18n strings
     private transient TextProvider textProvider;
 
 	private transient EncryptionService encryptionService;
@@ -119,6 +120,19 @@ public class SshTaskConfigurator extends AbstractTaskConfigurator
         if (StringUtils.isEmpty(remotePath))
         {
             errorCollection.addError("timeout", "Specify the number of seconds to wait before giving up");
+        }
+        
+        String commandChange = params.getString("change_command");
+        if ("true".equals(commandChange))
+        {
+        	 String password = params.getString("new_password");
+        	 if(StringUtils.isEmpty(password)){
+        		 errorCollection.addError("new_password", "When altering the commands, password re-entry is required"); 
+        	 }
+             String script = params.getString("inlineScript");
+        	 if(StringUtils.isEmpty(script)){
+        		 errorCollection.addError("inlineScript", "Wouldn't you rather I did _something_ ?"); 
+        	 }
         }
     }
 
