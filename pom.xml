@@ -5,8 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.edwardawebb</groupId>
     <artifactId>bamboo-ssh-plugin</artifactId>
-    <version>1.1.1</version>
-
+    <version>1.2.1-SNAPSHOT</version>
     <organization>
     	<name>Edward A Webb</name>
         <url>http://edwardawebb.com/</url>
@@ -25,7 +24,7 @@
     <properties>
         <bamboo.version>4.2</bamboo.version>
         <bamboo.data.version>3.2.2</bamboo.data.version>
-        <amps.version>3.7.2</amps.version>
+        <amps.version>3.11</amps.version>
     </properties>
 
     <dependencies>
@@ -67,11 +66,12 @@
             <plugin>
                 <groupId>com.atlassian.maven.plugins</groupId>
                 <artifactId>maven-bamboo-plugin</artifactId>
-                <version>3.7.2</version>
+                <version>${amps.version}</version>
                 <extensions>true</extensions>
                 <configuration>
                     <productVersion>${bamboo.version}</productVersion>
                     <productDataVersion>${bamboo.data.version}</productDataVersion>
+                  <productDataPath>${basedir}/src/test/resources/generated-test-resources.zip</productDataPath> 
                 </configuration>
             </plugin>
           
