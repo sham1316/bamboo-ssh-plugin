@@ -23,11 +23,12 @@ import org.jetbrains.annotations.NotNull;
 import com.atlassian.bamboo.build.logger.BuildLogger;
 import com.atlassian.bamboo.configuration.ConfigurationMap;
 import com.atlassian.bamboo.security.EncryptionService;
+import com.atlassian.bamboo.task.CommonTaskContext;
+import com.atlassian.bamboo.task.CommonTaskType;
 import com.atlassian.bamboo.task.TaskContext;
 import com.atlassian.bamboo.task.TaskException;
 import com.atlassian.bamboo.task.TaskResult;
 import com.atlassian.bamboo.task.TaskResultBuilder;
-import com.atlassian.bamboo.task.TaskType;
 import com.google.common.collect.Sets;
 
 /**
@@ -35,7 +36,7 @@ import com.google.common.collect.Sets;
  * Because all source files are remote we can;t leverage bamboo's FileVisitor for ant-style glob matching of files.
  * 
  */
-public class ReverseScpTask implements TaskType
+public class ReverseScpTask implements CommonTaskType
 {
     private final EncryptionService encryptionService;
 
@@ -46,9 +47,9 @@ public class ReverseScpTask implements TaskType
 
     @NotNull
     @java.lang.Override
-    public TaskResult execute(@NotNull final TaskContext taskContext) throws TaskException
+    public TaskResult execute(@NotNull final CommonTaskContext taskContext) throws TaskException
     {
-        final TaskResultBuilder taskResultBuilder = TaskResultBuilder.create(taskContext);
+        final TaskResultBuilder taskResultBuilder = TaskResultBuilder.newBuilder(taskContext);
 
         final BuildLogger buildLogger = taskContext.getBuildLogger();
 
@@ -109,7 +110,7 @@ public class ReverseScpTask implements TaskType
         return taskResultBuilder.success().build();
     }
 
-    private void transferFiles(final SSHClient ssh, final TaskContext taskContext, final TaskResultBuilder taskResultBuilder, final Set<String> failedToDownload, final BuildLogger buildLogger)
+    private void transferFiles(final SSHClient ssh, final CommonTaskContext taskContext, final TaskResultBuilder taskResultBuilder, final Set<String> failedToDownload, final BuildLogger buildLogger)
     {
         final String localPath = taskContext.getConfigurationMap().get("localPath");
         final String remotePath = taskContext.getConfigurationMap().get("remotePath");

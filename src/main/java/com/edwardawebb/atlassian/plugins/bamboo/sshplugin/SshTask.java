@@ -18,21 +18,21 @@ import com.atlassian.bamboo.build.logger.BuildLogger;
 import com.atlassian.bamboo.configuration.ConfigurationMap;
 import com.atlassian.bamboo.security.EncryptionException;
 import com.atlassian.bamboo.security.EncryptionService;
-import com.atlassian.bamboo.task.TaskContext;
+import com.atlassian.bamboo.task.CommonTaskContext;
+import com.atlassian.bamboo.task.CommonTaskType;
 import com.atlassian.bamboo.task.TaskException;
 import com.atlassian.bamboo.task.TaskResult;
 import com.atlassian.bamboo.task.TaskResultBuilder;
-import com.atlassian.bamboo.task.TaskType;
 
-public class SshTask implements TaskType {
+public class SshTask implements CommonTaskType {
         private transient EncryptionService encryptionService;
 
         @NotNull
         @java.lang.Override
-        public TaskResult execute(@NotNull final TaskContext taskContext)
+        public TaskResult execute(@NotNull final CommonTaskContext taskContext)
                         throws TaskException {
                 TaskResultBuilder taskResultBuilder = TaskResultBuilder
-                                .create(taskContext);
+                                .newBuilder(taskContext);
 
                 boolean failure = false;
                 final BuildLogger buildLogger = taskContext.getBuildLogger();
