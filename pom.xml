@@ -18,7 +18,7 @@
     <description>Uses Java SSH libraries to allow password based execution of remote commands via SSH</description>
     <packaging>atlassian-plugin</packaging>
     <properties>
-        <bamboo.version>5.0</bamboo.version>
+        <bamboo.version>5.6</bamboo.version>
         <bamboo.data.version>3.2.2</bamboo.data.version>
         <amps.version>4.2.7</amps.version>
     </properties>
@@ -28,6 +28,12 @@
             <artifactId>atlassian-bamboo-web</artifactId>
             <version>${bamboo.version}</version>
             <scope>provided</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>javax.jms</groupId>
+					<artifactId>jms</artifactId>
+				</exclusion>
+			</exclusions>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
