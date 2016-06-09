@@ -73,12 +73,6 @@ public class ReverseScpTask implements CommonTaskType
 
         final SSHClient ssh = new SSHClient();
 
-        LOG.error("Secrets");
-        LOG.error(":"+password);
-        LOG.error(":"+passphrase);
-        LOG.error(":"+privateKey);
-        LOG.error(":"+config.get(AuthType.CONFIG_KEY));
-
         //Always validate
         ssh.addHostKeyVerifier(new HostKeyVerifier()
         {
