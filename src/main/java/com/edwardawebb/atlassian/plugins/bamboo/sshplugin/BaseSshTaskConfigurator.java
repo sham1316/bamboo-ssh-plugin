@@ -5,12 +5,15 @@ import com.atlassian.bamboo.security.EncryptionService;
 import com.atlassian.bamboo.task.AbstractTaskConfigurator;
 import com.atlassian.bamboo.task.TaskDefinition;
 import com.atlassian.bamboo.utils.error.ErrorCollection;
+import net.schmizz.sshj.SSHClient;
+import net.schmizz.sshj.userauth.keyprovider.KeyProvider;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,6 +29,7 @@ public class BaseSshTaskConfigurator extends AbstractTaskConfigurator
 
     private final EncryptionService encryptionService;
 
+    private static final org.slf4j.Logger LOG = LoggerFactory.getLogger(ReverseScpTask.class);
     public BaseSshTaskConfigurator(EncryptionService encryptionService)
     {
         this.encryptionService = encryptionService;
@@ -47,55 +51,33 @@ public class BaseSshTaskConfigurator extends AbstractTaskConfigurator
         }
 
         String passwordChange = params.getString("change_password");
-        if ("true".equals(passwordChange))
+        String oldPassword =  previousTaskDefinition.getConfiguration().get("password");
+        if ( null == oldPassword ||  "true".equals(passwordChange))
         {
             final String password = params.getString("password");
             config.put("password", encryptionService.encrypt(password));
-        }
-        else if (previousTaskDefinition != null)
-        {
+        }else{
             config.put("password", previousTaskDefinition.getConfiguration().get("password"));
         }
-        else
-        {
-            final String password = params.getString("password");
-            config.put("password", encryptionService.encrypt(password));
-        }
 
-        String keyChange = params.getString("change_key");
-        if ("true".equals(keyChange))
-        {
-            String key = readPrivateKey(params);
-            if (key != null)
-            {
-                config.put("private_key", encryptionService.encrypt(key));
+
+            String keyChange = params.getString("change_key");
+            String oldKey = previousTaskDefinition.getConfiguration().get("private_key");
+
+            if (null == oldKey || "true".equals(keyChange)) {
+                config.put("private_key", encryptionService.encrypt(readPrivateKey(params)));
+            } else {
+                config.put("private_key", oldKey);
             }
-        }
-        else if (previousTaskDefinition != null)
-        {
-            config.put("private_key",  previousTaskDefinition.getConfiguration().get("private_key"));
-        }
-        else
-        {
-            final String privateKey = params.getString("private_key");
-            config.put("private_key", privateKey);
-        }
 
-        String passphraseChange = params.getString("change_passphrase");
-        if ("true".equals(passphraseChange))
-        {
-            final String passphrase = params.getString("passphrase");
-            config.put("passphrase", encryptionService.encrypt(passphrase));
-        }
-        else if (previousTaskDefinition != null)
-        {
-            config.put("passphrase", previousTaskDefinition.getConfiguration().get("passphrase"));
-        }
-        else
-        {
-            final String passphrase = params.getString("passphrase");
-            config.put("passphrase", encryptionService.encrypt(passphrase));
-        }
+
+            String passphraseChange = params.getString("change_passphrase");
+            String oldPhrase = previousTaskDefinition.getConfiguration().get("passphrase");
+            if (null == oldPhrase || "true".equals(keyChange)) {
+                config.put("passphrase", encryptionService.encrypt(params.getString("passphrase")));
+            } else {
+                config.put("passphrase", oldPhrase);
+            }
 
         return config;
     }
@@ -205,13 +187,13 @@ public class BaseSshTaskConfigurator extends AbstractTaskConfigurator
             case KEY:
                 if ("true".equals(params.getString("change_key")))
                 {
-                    SSHKeyProvider.validatePrivateKey(readPrivateKey(params), null, errorCollection);
+                    validatePrivateKey(params, errorCollection);
                 }
                 break;
             case KEY_WITH_PASSPHRASE:
                 if ("true".equals(params.getString("change_key")))
                 {
-                    SSHKeyProvider.validatePrivateKey(readPrivateKey(params), params.getString("passphrase"), errorCollection);
+                    validatePrivateKey(params, errorCollection);
                 }
                 if ("true".equals(params.getString("change_passphrase")))
                 {
@@ -223,6 +205,31 @@ public class BaseSshTaskConfigurator extends AbstractTaskConfigurator
                 }
                 break;
         }
+    }
+
+    /**
+     * Validates that if the key is supplied, it is usable
+     * @param params
+     * @param errorCollection an error message is added if the return value is false.
+     * @return false if the key is supplied but invalid, true if it is usable or absent.
+     */
+    boolean validatePrivateKey(final ActionParametersMap params, @NotNull final ErrorCollection errorCollection)
+    {
+        String passphrase = params.getString("passphrase");
+        final File private_key_file = params.getFiles().get("private_key");
+
+
+        try {
+            SSHClient client = new SSHClient();
+            KeyProvider provider = client.loadKeys(private_key_file.getPath());
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+            errorCollection.addError("private_key", "There is something wrong with your private key: " + e.getMessage());
+            return false;
+        }
+
+        return true;
     }
 
 }

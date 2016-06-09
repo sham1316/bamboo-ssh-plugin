@@ -11,6 +11,7 @@ import java.util.StringTokenizer;
 import net.schmizz.sshj.SSHClient;
 import net.schmizz.sshj.transport.verification.HostKeyVerifier;
 import net.schmizz.sshj.userauth.keyprovider.KeyProvider;
+import net.schmizz.sshj.userauth.password.PasswordUtils;
 import net.schmizz.sshj.xfer.FileSystemFile;
 import net.schmizz.sshj.xfer.LocalDestFile;
 import net.schmizz.sshj.xfer.scp.SCPDownloadClient;
@@ -30,6 +31,8 @@ import com.atlassian.bamboo.task.TaskException;
 import com.atlassian.bamboo.task.TaskResult;
 import com.atlassian.bamboo.task.TaskResultBuilder;
 import com.google.common.collect.Sets;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Uses remote file path and names to download those files that would match useing shell pattern matching.
@@ -39,6 +42,7 @@ import com.google.common.collect.Sets;
 public class ReverseScpTask implements CommonTaskType
 {
     private final EncryptionService encryptionService;
+    private static final Logger LOG = LoggerFactory.getLogger(ReverseScpTask.class);
 
     public ReverseScpTask(EncryptionService encryptionService)
     {
@@ -66,8 +70,14 @@ public class ReverseScpTask implements CommonTaskType
         final String password = encryptionService.decrypt(config.get("password"));
         final String privateKey = encryptionService.decrypt(config.get("private_key"));
         final String passphrase = encryptionService.decrypt(config.get("passphrase"));
-        
+
         final SSHClient ssh = new SSHClient();
+
+        LOG.error("Secrets");
+        LOG.error(":"+password);
+        LOG.error(":"+passphrase);
+        LOG.error(":"+privateKey);
+        LOG.error(":"+config.get(AuthType.CONFIG_KEY));
 
         //Always validate
         ssh.addHostKeyVerifier(new HostKeyVerifier()
@@ -88,8 +98,9 @@ public class ReverseScpTask implements CommonTaskType
             } 
             else
             {
-                KeyProvider[] kp = { new SSHKeyProvider(privateKey, passphrase) };
-                ssh.authPublickey(username, Arrays.asList(kp));
+                SSHClient client = new SSHClient();
+                KeyProvider provider = client.loadKeys(privateKey,null, PasswordUtils.createOneOff(passphrase.toCharArray()));
+                ssh.authPublickey(username, provider);
             }
         }
         catch (IOException e)

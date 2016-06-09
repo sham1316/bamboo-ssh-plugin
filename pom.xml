@@ -18,9 +18,9 @@
     <description>Uses Java SSH libraries to allow password based execution of remote commands via SSH</description>
     <packaging>atlassian-plugin</packaging>
     <properties>
-        <bamboo.version>5.6.0</bamboo.version>
+        <bamboo.version>5.10.3</bamboo.version>
         <bamboo.data.version>3.2.2</bamboo.data.version>
-        <amps.version>4.2.20</amps.version>
+        <amps.version>5.0.13</amps.version>
     </properties>
     <dependencies>
         <dependency>
@@ -44,7 +44,7 @@
         <dependency>
             <groupId>net.schmizz</groupId>
             <artifactId>sshj</artifactId>
-            <version>0.8.1</version>
+            <version>0.10.0</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.slf4j</groupId>
@@ -75,8 +75,8 @@
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
+                    <source>1.7</source>
+                    <target>1.7</target>
                 </configuration>
             </plugin>
         </plugins>

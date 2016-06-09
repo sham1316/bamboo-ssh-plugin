@@ -1,15 +1,15 @@
-#################################################			
-#						#
-#     Bamboo SSH Plugin for password support	#
-#						#
-#################################################
+#     Bamboo SSH Plugin for password support
 
-Author: Eddie Webb
-Date : Jan 21, 2012
-Contact: eddie@edwardawebb.com
-License: GNU General Public License v3
-	
-Uses Java libraries to provide support for executing shell commands on a remote host using a password rather then pre-defined keys.
+
+
+## A few Things..
+* Atlassian provides an SSH/SCP task that is supported by Atlassian.
+* This 3rd-party addon introduces a few features that were important for our use case.
+ * SSH command changes require password re-entry
+ * Reverse SCP Tasks allows you to pull files back from a remote server
+
+
+## Features
 
 * Does not require the public key to be installed on remote machines (though you can use this plugin to easily do so!)
 * Passwords are masked in logs
@@ -17,7 +17,7 @@ Uses Java libraries to provide support for executing shell commands on a remote 
 * Changing the executed command requires re-entry of password
 
 
-=== Want to contribute or modify? see the wiki, or try ===
+# Want to contribute or modify? see the wiki, or try
 
 
 Download and install atlassian's latest SDK
