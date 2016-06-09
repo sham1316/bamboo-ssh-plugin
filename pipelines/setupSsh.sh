@@ -12,3 +12,4 @@ echo -e $PRIVATEKEY > ~/.ssh/id_rsa
 chmod 0600 ~/.ssh/id_rsa
 eval "$(ssh-agent)"
 ssh-add ~/.ssh/id_rsa
+ssh eawmvn@maven.edwardawebb.com echo test 1>/dev/null 2>&1 && echo SSH_OK || echo SSH_NOK
