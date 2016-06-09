@@ -35,7 +35,8 @@ function deployAndTag {
 # with artifact available at URL this publishes the details to markeplce
 function publishToMarketplace {
 	#public available URL to find our plugin (NOTE - marketplace provides means to upload via API first if you dont have a public repo)
-	URL="http://maven.edwardawebb.com/repository/releases/com/edwardawebb/bamboo-agent-apis/${releaseVersion}/bamboo-agent-apis-${releaseVersion}.jar"
+	PUBLISHEDURL="http://maven.edwardawebb.com/repository/releases/com/edwardawebb/bamboo-ssh-plugin/${releaseVersion}/bamboo-ssh-plugin-${releaseVersion}.jar"
+	versionToBuildNumber
 	#setup and replace values in json template
 	TODAY=`date +%Y-%m-%d`
 	RLSSUMMARY=`git log -1 --pretty=%B`
@@ -43,8 +44,8 @@ function publishToMarketplace {
 	    -e "s/\${TODAY}/${TODAY}/g" \
 	    -e "s/\${SUMMARY}/${RLSSUMMARY}/g" \
 	    -e "s/\${BUILD}/${buildNumber}/g" \
-	    -e "s#\${URL}#${URL}#g" \
-	 pipelines/marketplacePost.json > target/marketplacePost.json
+	    -e "s#\${URL}#${PUBLISHEDURL}#g" \
+	    pipelines/marketplacePost.json > target/marketplacePost.json
 	#publish the released artifact to atlassian marketplace
 	httpCode=$(curl --basic -u ${MKTUSER}:${MKTPASSWD} \
 	-H "Content-Type: application/json" \
@@ -60,6 +61,8 @@ function publishToMarketplace {
 		cat target/mktError.json >&2
 		exit 1
 	fi
+    printf  "\n-----------------------\nPublished!  SHipit complete\n---------------------------\n"
+
 }
 
 
