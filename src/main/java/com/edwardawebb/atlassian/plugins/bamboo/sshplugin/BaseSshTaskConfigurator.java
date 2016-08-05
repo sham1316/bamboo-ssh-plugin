@@ -50,12 +50,15 @@ public class BaseSshTaskConfigurator extends AbstractTaskConfigurator
             //brand new config, add password OR key, ignoring the other
             final String password = params.getString("password");
             final String privateKey = readPrivateKey(params);
-            if ( null != password ){
+            if (AuthType.PASSWORD.equals(AuthType.valueOf(authType))){
+                log.debug("Using password for new task config");
                 config.put("password", encryptionService.encrypt(password));
             }else if ( null != privateKey ){
+                log.debug("Using key for new task config");
                 config.put("private_key", encryptionService.encrypt(privateKey));
                 String passphrase = params.getString("passphrase");
                 if ( null != passphrase ){
+                    log.debug("adding passphrase");
                     config.put("passphrase", encryptionService.encrypt(passphrase));
                 }
             }
@@ -86,7 +89,7 @@ public class BaseSshTaskConfigurator extends AbstractTaskConfigurator
                     }
                 }else{
                     config.put("private_key",oldKey);
-                    config.put("passphrase",oldPhrase); //just saves null if not using it.
+                    config.put("passphrase", oldPhrase); //just saves null if not using it.
                 }
             }
         }
@@ -109,6 +112,8 @@ public class BaseSshTaskConfigurator extends AbstractTaskConfigurator
                 log.error("Cannot read uploaded ssh key file", e);
             }
 
+        }else{
+            log.error("Unable to load key from config submission!");
         }
         return null;
     }
