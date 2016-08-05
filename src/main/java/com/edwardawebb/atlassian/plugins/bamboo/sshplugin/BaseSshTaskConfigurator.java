@@ -40,45 +40,56 @@ public class BaseSshTaskConfigurator extends AbstractTaskConfigurator
     public Map<String, String> generateTaskConfigMap(@NotNull final ActionParametersMap params, @Nullable final TaskDefinition previousTaskDefinition)
     {
         final Map<String, String> config = super.generateTaskConfigMap(params, previousTaskDefinition);
+        String authType = params.getString("authType");
+        config.put("authType",authType);
         config.put("host", params.getString("host"));
         config.put("username", params.getString("username"));
-        config.put("authType", AuthType.valueOf(params.getString("authType")).toString());
+        config.put("port", Integer.toString(NumberUtils.toInt(params.getString("port"), DEFAULT_SSH_PORT_NUMBER)));
 
-        String port = params.getString("port");
-        if (StringUtils.isNotEmpty(port))
-        {
-            config.put("port", Integer.toString(NumberUtils.toInt(port, DEFAULT_SSH_PORT_NUMBER)));
-        }
-
-        String passwordChange = params.getString("change_password");
-        String oldPassword =  previousTaskDefinition.getConfiguration().get("password");
-        if ( null == oldPassword ||  "true".equals(passwordChange))
-        {
+        if ( null == previousTaskDefinition ){
+            //brand new config, add password OR key, ignoring the other
             final String password = params.getString("password");
-            config.put("password", encryptionService.encrypt(password));
+            final String privateKey = readPrivateKey(params);
+            if ( null != password ){
+                config.put("password", encryptionService.encrypt(password));
+            }else if ( null != privateKey ){
+                config.put("private_key", encryptionService.encrypt(privateKey));
+                String passphrase = params.getString("passphrase");
+                if ( null != passphrase ){
+                    config.put("passphrase", encryptionService.encrypt(passphrase));
+                }
+            }
         }else{
-            config.put("password", previousTaskDefinition.getConfiguration().get("password"));
-        }
-
-
+            //update config, but not necessarliy providing a new password
+            String passwordChange = params.getString("change_password"); //even update can have empoty password if using keys before
             String keyChange = params.getString("change_key");
+            String oldPassword =  previousTaskDefinition.getConfiguration().get("password");
             String oldKey = previousTaskDefinition.getConfiguration().get("private_key");
-
-            if (null == oldKey || "true".equals(keyChange)) {
-                config.put("private_key", encryptionService.encrypt(readPrivateKey(params)));
-            } else {
-                config.put("private_key", oldKey);
-            }
-
-
-            String passphraseChange = params.getString("change_passphrase");
             String oldPhrase = previousTaskDefinition.getConfiguration().get("passphrase");
-            if (null == oldPhrase || "true".equals(keyChange)) {
-                config.put("passphrase", encryptionService.encrypt(params.getString("passphrase")));
-            } else {
-                config.put("passphrase", oldPhrase);
-            }
 
+            if(AuthType.PASSWORD.equals(AuthType.valueOf(authType))){
+                log.debug("Using password authtype");
+                if ( "true".equals(passwordChange) ) {
+                    log.debug("Changing password");
+                    final String password = params.getString("password");
+                    config.put("password", encryptionService.encrypt(password));
+                }else{
+                   config.put("password", oldPassword);
+                }
+            }else{
+                log.debug("Using key authtype");
+                if ( "true".equals(keyChange) ) {
+                    log.debug("Adding new key");
+                    config.put("private_key", encryptionService.encrypt(readPrivateKey(params)));
+                    if(AuthType.KEY_WITH_PASSPHRASE.equals(AuthType.valueOf(authType))){
+                        config.put("passphrase", encryptionService.encrypt(params.getString("passphrase")));
+                    }
+                }else{
+                    config.put("private_key",oldKey);
+                    config.put("passphrase",oldPhrase); //just saves null if not using it.
+                }
+            }
+        }
         return config;
     }
 

@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.edwardawebb</groupId>
     <artifactId>bamboo-ssh-plugin</artifactId>
-    <version>1.6-SNAPSHOT</version>
+    <version>1.6.1-SNAPSHOT</version>
     <organization>
         <name>Edward A Webb</name>
         <url>http://edwardawebb.com/</url>
@@ -15,7 +15,7 @@
         <url>https://bitbucket.org/eddiewebb/bamboo-ssh-plugin</url>
     </scm>
     <name>bamboo-ssh-plugin</name>
-    <description>Uses Java SSH libraries to allow password based execution of remote commands via SSH</description>
+    <description>Provides reverse SCP and stricter SSH task</description>
     <packaging>atlassian-plugin</packaging>
     <properties>
         <bamboo.version>5.10.3</bamboo.version>
