@@ -1,20 +1,9 @@
 # You can use a Docker image from Docker Hub or your own container
 # registry for your build environment.
-image: maven:3.3.3-jdk-7
+image: eddiewebb/bitbucket-pipelines-marketplace:latest
 
 pipelines:
   default:
     - step:
-        script: # this Doesn't run on any branches matched below.
-          - mvn --batch-mode clean install
-  branches:
-    master:
-      - step:
-          script:
-            - bash pipelines/setupSsh.sh  #validate SSH works before wasting time downloading internet
-            - mvn --batch-mode deploy # this deploys a snapshot to the repo
-    shipit:
-      - step:
-          script: # updates version as release
-            - bash pipelines/setupSsh.sh  #validate SSH works before wasting time downloading internet
-            - bash pipelines/shipit.sh #this script performs a release and publishes to marketplace
+        script:
+          - bash shipit.sh
